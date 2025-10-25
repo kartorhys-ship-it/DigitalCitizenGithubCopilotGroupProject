@@ -61,20 +61,26 @@
         // Theme Toggle
         DOM.themeToggle?.addEventListener('click', toggleTheme);
 
-        // Scroll Events
-        window.addEventListener('scroll', debounce(handleScroll, 100));
+    // Scroll Events (passive for better performance) and debounced
+    window.addEventListener('scroll', debounce(handleScroll, 100), { passive: true });
 
         // Back to Top
         DOM.backToTop?.addEventListener('click', scrollToTop);
 
         // Flip Cards
+        // Use currentTarget in key handlers so inner elements don't break keyboard interaction
         DOM.flipCards?.forEach(card => {
             card.addEventListener('click', () => flipCard(card));
             card.addEventListener('keydown', handleCardKeyPress);
         });
 
         // Checklist
-        DOM.checklistItems?.forEach(item => {
+        // Ensure each checkbox has a stable id so localStorage keys are consistent
+        Array.from(DOM.checklistItems || []).forEach((item, idx) => {
+            if (!item.id) {
+                // generate a predictable id
+                item.id = `checklist-item-${idx}`;
+            }
             item.addEventListener('change', updateProgress);
             // Load saved state
             const saved = localStorage.getItem(`checklist-${item.id}`);
@@ -91,9 +97,9 @@
             el?.addEventListener('click', closeModal);
         });
 
-        // Example Buttons
+        // Example Buttons (use currentTarget so inner elements don't break dataset access)
         document.querySelectorAll('.example-btn').forEach(btn => {
-            btn?.addEventListener('click', (e) => showExample(e.target.dataset.example));
+            btn?.addEventListener('click', (e) => showExample(e.currentTarget.dataset.example));
         });
 
         // Initialize Quiz
@@ -109,16 +115,17 @@
 
     // Theme Functions
     function toggleTheme() {
-        document.body.classList.toggle('theme-light');
-        const isDark = !document.body.classList.contains('theme-light');
-        localStorage.setItem('darkMode', isDark);
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
         updateThemeIcon();
     }
 
     function updateThemeIcon() {
-        const isDark = !document.body.classList.contains('theme-light');
-        DOM.themeToggle.innerHTML = isDark ? 
-            '<i class="fas fa-moon"></i>' : 
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        DOM.themeToggle.innerHTML = current === 'dark' ?
+            '<i class="fas fa-moon"></i>' :
             '<i class="fas fa-sun"></i>';
     }
 
@@ -131,14 +138,21 @@
             DOM.backToTop?.classList.remove('visible');
         }
 
-        // Reveal animations
-        DOM.sections?.forEach(section => {
-            if (isElementInViewport(section)) {
-                section.querySelectorAll('.reveal').forEach(el => {
+        // Reveal animations: cache reveal elements and check them individually
+        if (!window._revealElements) {
+            window._revealElements = Array.from(document.querySelectorAll('.reveal'));
+        }
+
+        if (window._revealElements.length) {
+            // Filter out elements that become active so we stop checking them
+            window._revealElements = window._revealElements.filter(el => {
+                if (isElementPartiallyInViewport(el)) {
                     el.classList.add('active');
-                });
-            }
-        });
+                    return false; // remove from list
+                }
+                return true;
+            });
+        }
     }
 
     function scrollToTop() {
@@ -158,7 +172,8 @@
     function handleCardKeyPress(e) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            flipCard(e.target);
+            // Use currentTarget to get the flip-card element
+            flipCard(e.currentTarget || e.target);
         }
     }
 
@@ -166,7 +181,7 @@
     function updateProgress() {
         const total = DOM.checklistItems?.length || 0;
         const checked = Array.from(DOM.checklistItems || []).filter(item => item.checked).length;
-        const percentage = (checked / total) * 100;
+    const percentage = total === 0 ? 0 : (checked / total) * 100;
 
         // Update progress bar
         if (DOM.progressBar) {
@@ -187,6 +202,26 @@
         if (percentage === 100) {
             showCompletionMessage();
         }
+    }
+
+    function showCompletionMessage() {
+        if (document.querySelector('.completion-toast')) return;
+        const toast = document.createElement('div');
+        toast.className = 'completion-toast';
+        toast.textContent = 'Checklist complete — great job!';
+        Object.assign(toast.style, {
+            position: 'fixed',
+            right: '1rem',
+            bottom: '4.5rem',
+            background: 'var(--primary)',
+            color: '#fff',
+            padding: '0.6rem 1rem',
+            borderRadius: '0.5rem',
+            boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
+            zIndex: 2000
+        });
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3000);
     }
 
     function resetProgress() {
@@ -222,12 +257,16 @@
             DOM.modal.querySelector('#modalTitle').textContent = example.title;
             DOM.modal.querySelector('.modal-body').textContent = example.content;
             DOM.modal.classList.add('active');
+            DOM.modal.setAttribute('aria-hidden', 'false');
             trapFocus(DOM.modal);
         }
     }
 
     function closeModal() {
-        DOM.modal?.classList.remove('active');
+        if (DOM.modal) {
+            DOM.modal.classList.remove('active');
+            DOM.modal.setAttribute('aria-hidden', 'true');
+        }
         restoreFocus();
     }
 
@@ -322,16 +361,18 @@
 
     // Focus Management
     let lastFocusedElement;
+    let _modalKeydownHandler = null;
 
     function trapFocus(element) {
         lastFocusedElement = document.activeElement;
-        const focusableEls = element.querySelectorAll('a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select');
+        const focusableEls = element.querySelectorAll('a[href], button, textarea, input, select');
         const firstFocusableEl = focusableEls[0];
         const lastFocusableEl = focusableEls[focusableEls.length - 1];
 
         firstFocusableEl?.focus();
 
-        element.addEventListener('keydown', function(e) {
+        // Create a named handler so we can remove it later
+        _modalKeydownHandler = function(e) {
             if (e.key === 'Tab') {
                 if (e.shiftKey) {
                     if (document.activeElement === firstFocusableEl) {
@@ -348,18 +389,38 @@
             if (e.key === 'Escape') {
                 closeModal();
             }
-        });
+        };
+
+        element.addEventListener('keydown', _modalKeydownHandler);
     }
 
     function restoreFocus() {
+        // Remove modal keydown handler if present
+        if (_modalKeydownHandler && DOM.modal) {
+            DOM.modal.removeEventListener('keydown', _modalKeydownHandler);
+            _modalKeydownHandler = null;
+        }
         lastFocusedElement?.focus();
+    }
+
+    // Partial-visibility helper used by reveal logic
+    function isElementPartiallyInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+        const windowWidth = (window.innerWidth || document.documentElement.clientWidth);
+        const verticallyInView = rect.top <= windowHeight && (rect.top + rect.height) >= 0;
+        const horizontallyInView = rect.left <= windowWidth && (rect.left + rect.width) >= 0;
+        return verticallyInView && horizontallyInView;
     }
 
     // Initialize on DOM Load
     document.addEventListener('DOMContentLoaded', () => {
-        // Load saved theme
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.remove('theme-light');
+        // Load saved theme (data-theme on <html>)
+        const saved = localStorage.getItem('theme');
+        if (saved) {
+            document.documentElement.setAttribute('data-theme', saved);
+        } else if (!document.documentElement.hasAttribute('data-theme')) {
+            document.documentElement.setAttribute('data-theme', 'light');
         }
         updateThemeIcon();
 
