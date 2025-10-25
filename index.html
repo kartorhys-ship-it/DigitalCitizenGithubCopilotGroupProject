@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Identity Awareness</title>
+    <meta name="description" content="Learn about digital identity, online risks, and how to protect yourself in the digital world.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Skip Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Reading Progress -->
+    <div class="progress-bar" id="readingProgress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="title-group">
+                <h1>Digital Identity Awareness</h1>
+                <p>Learn how to protect your online identity</p>
+            </div>
+            <nav class="main-nav">
+                <button class="nav-toggle" aria-label="Toggle navigation">
+                    <span></span>
+                </button>
+                <ul>
+                    <li><a href="#intro">Home</a></li>
+                    <li><a href="#risks">Risks</a></li>
+                    <li><a href="#protection">Protection</a></li>
+                    <li><a href="#quiz">Quiz</a></li>
+                </ul>
+            </nav>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Intro Section -->
+        <section id="intro" class="section intro-section">
+            <div class="container">
+                <h2 class="section-title reveal">What is Digital Identity?</h2>
+                <div class="info-grid reveal">
+                    <div class="info-card">
+                        <i class="fas fa-fingerprint"></i>
+                        <h3>Your Online Self</h3>
+                        <p>Your digital identity is the sum of all traces you leave online.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-globe"></i>
+                        <h3>Digital Footprint</h3>
+                        <p>Every click, like, and share contributes to your digital presence.</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-key"></i>
+                        <h3>Personal Data</h3>
+                        <p>Includes emails, social profiles, and online accounts.</p>
+                    </div>
+                </div>
+
+                <blockquote class="quote reveal">
+                    "Your digital identity is the reflection of your actions online."
+                </blockquote>
+
+                <button class="learn-more-btn" aria-expanded="false">
+                    Learn More
+                </button>
+                <div class="learn-more-panel" hidden>
+                    <p>Your digital identity extends beyond social media profiles. It includes:</p>
+                    <ul>
+                        <li>Browser history and cookies</li>
+                        <li>Online shopping patterns</li>
+                        <li>Digital communications</li>
+                        <li>App usage and preferences</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risks Section -->
+        <section id="risks" class="section risks-section">
+            <div class="container">
+                <h2 class="section-title reveal">Digital Risks</h2>
+                <div class="view-toggle">
+                    <button class="active" data-view="summary">Summary View</button>
+                    <button data-view="detailed">Detailed View</button>
+                </div>
+
+                <div class="card-grid reveal">
+                    <!-- Phishing Card -->
+                    <div class="flip-card" tabindex="0">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <i class="fas fa-fish"></i>
+                                <h3>Phishing</h3>
+                                <p>Deceptive attempts to steal your information.</p>
+                                <button class="flip-btn">Learn More</button>
+                            </div>
+                            <div class="card-back">
+                                <h3>Phishing Tactics</h3>
+                                <ul>
+                                    <li>Fake emails and websites</li>
+                                    <li>Urgent action requests</li>
+                                    <li>Too-good-to-be-true offers</li>
+                                </ul>
+                                <button class="example-btn" data-example="phishing">See Example</button>
+                                <button class="flip-btn">Back</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scams Card -->
+                    <div class="flip-card" tabindex="0">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h3>Scams</h3>
+                                <p>Fraudulent schemes to deceive and exploit.</p>
+                                <button class="flip-btn">Learn More</button>
+                            </div>
+                            <div class="card-back">
+                                <h3>Common Scams</h3>
+                                <ul>
+                                    <li>Romance scams</li>
+                                    <li>Investment fraud</li>
+                                    <li>Tech support scams</li>
+                                </ul>
+                                <button class="example-btn" data-example="scams">See Example</button>
+                                <button class="flip-btn">Back</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Identity Theft Card -->
+                    <div class="flip-card" tabindex="0">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <i class="fas fa-user-secret"></i>
+                                <h3>Identity Theft</h3>
+                                <p>Unauthorized use of personal information.</p>
+                                <button class="flip-btn">Learn More</button>
+                            </div>
+                            <div class="card-back">
+                                <h3>Warning Signs</h3>
+                                <ul>
+                                    <li>Unauthorized transactions</li>
+                                    <li>Missing mail or emails</li>
+                                    <li>Unknown accounts</li>
+                                </ul>
+                                <button class="example-btn" data-example="theft">See Example</button>
+                                <button class="flip-btn">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Protection Section -->
+        <section id="protection" class="section protection-section">
+            <div class="container">
+                <h2 class="section-title reveal">Protection Checklist</h2>
+                <div class="progress-container reveal">
+                    <div class="checklist-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <span class="progress-text">0% Complete</span>
+                </div>
+
+                <div class="checklist reveal">
+                    <label class="checklist-item">
+                        <input type="checkbox" data-tip="At least 12 characters with mixed case, numbers, and symbols">
+                        <span class="checkmark"></span>
+                        <span class="text">Use strong passwords</span>
+                        <i class="fas fa-info-circle tooltip-trigger"></i>
+                    </label>
+
+                    <label class="checklist-item">
+                        <input type="checkbox" data-tip="Add an extra layer of security to your accounts">
+                        <span class="checkmark"></span>
+                        <span class="text">Enable Two-Factor Authentication (2FA)</span>
+                        <i class="fas fa-info-circle tooltip-trigger"></i>
+                    </label>
+
+                    <label class="checklist-item">
+                        <input type="checkbox" data-tip="Never click links from unknown sources">
+                        <span class="checkmark"></span>
+                        <span class="text">Avoid suspicious links</span>
+                        <i class="fas fa-info-circle tooltip-trigger"></i>
+                    </label>
+
+                    <label class="checklist-item">
+                        <input type="checkbox" data-tip="Keep all software and systems up to date">
+                        <span class="checkmark"></span>
+                        <span class="text">Update software regularly</span>
+                        <i class="fas fa-info-circle tooltip-trigger"></i>
+                    </label>
+
+                    <label class="checklist-item">
+                        <input type="checkbox" data-tip="Be careful what you share on social media">
+                        <span class="checkmark"></span>
+                        <span class="text">Limit personal information sharing</span>
+                        <i class="fas fa-info-circle tooltip-trigger"></i>
+                    </label>
+
+                    <label class="checklist-item">
+                        <input type="checkbox" data-tip="Use unique passwords for each account">
+                        <span class="checkmark"></span>
+                        <span class="text">Never reuse passwords</span>
+                        <i class="fas fa-info-circle tooltip-trigger"></i>
+                    </label>
+                </div>
+
+                <button class="reset-btn" id="resetChecklist">Reset Progress</button>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="section quiz-section">
+            <div class="container">
+                <h2 class="section-title reveal">Test Your Knowledge</h2>
+                <div class="quiz-container reveal">
+                    <form id="quizForm">
+                        <!-- Questions will be dynamically inserted here -->
+                    </form>
+                    <div class="quiz-results" hidden>
+                        <h3>Your Score: <span class="score">0</span>/3</h3>
+                        <p class="feedback"></p>
+                        <button class="retry-btn">Try Again</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>© 2024 Digital Identity Awareness</p>
+                    <p>Educational resource for online safety</p>
+                </div>
+                <div class="social-links">
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Modal -->
+    <div class="modal" id="exampleModal" aria-hidden="true">
+        <div class="modal-overlay"></div>
+        <div class="modal-content" role="dialog" aria-labelledby="modalTitle">
+            <button class="modal-close" aria-label="Close modal">×</button>
+            <h3 id="modalTitle"></h3>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
